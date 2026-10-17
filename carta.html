@@ -23,6 +23,7 @@
     color-scheme: dark;
   }
 
+  *, *::before, *::after { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
     background:
@@ -121,6 +122,7 @@
     padding: 0; border: 0; background: none;
     cursor: pointer;
     border-radius: 50%;
+    filter: drop-shadow(0 4px 5px rgba(0,0,0,.4));
     animation: breathe 2.8s ease-in-out infinite 1.4s;
   }
   .seal:focus-visible { outline: 2px dashed var(--hint); outline-offset: 6px; }
@@ -130,7 +132,7 @@
     position: absolute; inset: 0;
     border-radius: 48% 52% 50% 46% / 50% 45% 55% 50%;
     background: radial-gradient(circle at 34% 28%, var(--wax-hi), var(--wax) 55%, #4a0c15);
-    box-shadow: 0 4px 8px rgba(0,0,0,.4), inset 0 -3px 6px rgba(0,0,0,.35);
+    box-shadow: inset 0 -3px 6px rgba(0,0,0,.35);
     display: grid; place-items: center;
     transition: transform .65s cubic-bezier(.5,0,.7,.4), opacity .65s ease;
   }
