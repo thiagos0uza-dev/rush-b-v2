@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>Carta para Luiza</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Pinyon+Script&display=swap">
+<style>
+  /* Layout: uma mesa escura à luz de vela; o envelope no centro, a carta abre por cima. Visual único (noturno), sem tema claro. */
+  :root {
+    --table: #1b1f19;
+    --glow: rgba(255, 196, 128, .13);
+    --env: #dccbaa;
+    --env-shade: #c4ae86;
+    --env-inside: #a88f68;
+    --paper: #f2e8d3;
+    --ink: #3a2c44;
+    --ink-soft: rgba(58, 44, 68, .62);
+    --wax: #7a1a27;
+    --wax-hi: #b0434f;
+    --hint: rgba(240, 226, 202, .66);
+    --f-script: "Pinyon Script", "Snell Roundhand", cursive;
+    --f-hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+    --f-serif: "Cormorant Garamond", Georgia, serif;
+    color-scheme: dark;
+  }
+
+  html, body { height: 100%; }
+  body {
+    background:
+      radial-gradient(60% 50% at 50% 42%, var(--glow), transparent 70%),
+      radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0,0,0,.55)),
+      var(--table);
+    color: var(--hint);
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ---------- cena do envelope ---------- */
+  .scene {
+    height: 100%;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 28px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .scene.reading { opacity: 0; transform: translateY(40px); pointer-events: none; }
+
+  .envelope {
+    position: relative;
+    width: min(86vw, 440px);
+    aspect-ratio: 3 / 2;
+    perspective: 1200px;
+    filter: drop-shadow(0 18px 30px rgba(0,0,0,.45));
+    animation: settle 1.2s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes settle { from { opacity: 0; transform: translateY(18px) rotate(-2deg); } }
+
+  .env-back {
+    position: absolute; inset: 0;
+    background: linear-gradient(170deg, var(--env-inside), #8f7752);
+    border-radius: 6px;
+  }
+
+  .peek {
+    position: absolute;
+    left: 6%; right: 6%; top: 7%; height: 86%;
+    background: var(--paper);
+    border-radius: 3px;
+    box-shadow: 0 -2px 6px rgba(0,0,0,.15);
+    z-index: 2;
+    transition: transform 1s cubic-bezier(.3,.7,.2,1);
+  }
+  .peek::before {
+    content: ""; position: absolute; left: 12%; right: 12%; top: 16%;
+    height: 40%;
+    background: repeating-linear-gradient(to bottom, transparent 0 12px, rgba(58,44,68,.14) 12px 13px);
+  }
+
+  .env-front {
+    position: absolute; inset: 0; z-index: 3;
+    border-radius: 6px;
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.18), transparent 40%),
+      var(--env);
+    clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+  }
+  .env-front::after {
+    /* dobras laterais */
+    content: ""; position: absolute; inset: 0;
+    background:
+      linear-gradient(to top right, transparent 49.6%, rgba(0,0,0,.08) 50%, transparent 50.6%),
+      linear-gradient(to top left, transparent 49.6%, rgba(0,0,0,.08) 50%, transparent 50.6%);
+  }
+  .to {
+    position: absolute; z-index: 4;
+    left: 0; right: 0; bottom: 12%;
+    text-align: center;
+    font-family: var(--f-hand);
+    font-size: clamp(1.3rem, 5vw, 1.7rem);
+    color: var(--ink-soft);
+    transform: rotate(-3deg);
+    pointer-events: none;
+  }
+
+  .flap {
+    position: absolute; left: 0; right: 0; top: 0; height: 60%;
+    z-index: 5;
+    background: linear-gradient(180deg, var(--env-shade), var(--env));
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform .75s cubic-bezier(.4,.1,.2,1), z-index 0s .37s;
+  }
+
+  .seal {
+    position: absolute; z-index: 6;
+    left: 50%; top: 60%;
+    width: 76px; height: 76px;
+    margin: -46px 0 0 -38px;
+    padding: 0; border: 0; background: none;
+    cursor: pointer;
+    border-radius: 50%;
+    animation: breathe 2.8s ease-in-out infinite 1.4s;
+  }
+  .seal:focus-visible { outline: 2px dashed var(--hint); outline-offset: 6px; }
+  @keyframes breathe { 50% { transform: scale(1.06); } }
+
+  .wax {
+    position: absolute; inset: 0;
+    border-radius: 48% 52% 50% 46% / 50% 45% 55% 50%;
+    background: radial-gradient(circle at 34% 28%, var(--wax-hi), var(--wax) 55%, #4a0c15);
+    box-shadow: 0 4px 8px rgba(0,0,0,.4), inset 0 -3px 6px rgba(0,0,0,.35);
+    display: grid; place-items: center;
+    transition: transform .65s cubic-bezier(.5,0,.7,.4), opacity .65s ease;
+  }
+  .wax::before {
+    content: ""; position: absolute; inset: 11px;
+    border-radius: 50%;
+    border: 2px solid rgba(40,0,8,.35);
+    box-shadow: inset 0 1px 0 rgba(255,170,170,.18), 0 1px 0 rgba(255,170,170,.18);
+  }
+  .wax span {
+    font-family: var(--f-script);
+    font-size: 40px; line-height: 1;
+    color: rgba(45,4,12,.6);
+    text-shadow: 0 1px 0 rgba(255,170,170,.25);
+    transform: translate(2px, 2px);
+  }
+  .wax.l { clip-path: polygon(0 0, 53% 0, 46% 22%, 56% 41%, 45% 60%, 54% 80%, 48% 100%, 0 100%); }
+  .wax.r { clip-path: polygon(53% 0, 100% 0, 100% 100%, 48% 100%, 54% 80%, 45% 60%, 56% 41%, 46% 22%); }
+
+  .hint {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    letter-spacing: .03em;
+    color: var(--hint);
+    transition: opacity .4s;
+    animation: settle 1.2s .5s both;
+  }
+
+  /* estados */
+  .scene.broken .seal { animation: none; pointer-events: none; }
+  .scene.broken .wax.l { transform: translate(-22px, 60px) rotate(-38deg); opacity: 0; }
+  .scene.broken .wax.r { transform: translate(24px, 64px) rotate(34deg); opacity: 0; }
+  .scene.broken .hint { opacity: 0; }
+  .scene.open .flap { transform: rotateX(180deg); z-index: 1; }
+  .scene.out .peek { transform: translateY(-62%); }
+
+  /* ---------- a carta aberta ---------- */
+  .reader {
+    position: fixed; inset: 0;
+    overflow-y: auto;
+    padding-block: max(28px, env(safe-area-inset-top, 0px)) max(40px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 22px;
+  }
+
+  .sheet {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    margin-top: 2vh;
+    padding: clamp(28px, 7vw, 56px) clamp(22px, 6vw, 52px) clamp(24px, 5vw, 40px);
+    color: var(--ink);
+    border-radius: 2px;
+    background:
+      linear-gradient(to bottom, transparent calc(33.33% - 1px), rgba(110,80,40,.16) 33.33%, rgba(255,255,255,.4) calc(33.33% + 1px), transparent calc(33.33% + 2px)),
+      linear-gradient(to bottom, transparent calc(66.66% - 1px), rgba(110,80,40,.16) 66.66%, rgba(255,255,255,.4) calc(66.66% + 1px), transparent calc(66.66% + 2px)),
+      radial-gradient(40% 30% at 88% 12%, rgba(160,110,50,.13), transparent 70%),
+      radial-gradient(30% 25% at 10% 85%, rgba(150,100,40,.10), transparent 70%),
+      radial-gradient(130% 100% at 50% 50%, transparent 60%, rgba(120,85,40,.22)),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .12 0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+      var(--paper);
+    box-shadow: 0 30px 60px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.25);
+    transform-origin: top center;
+  }
+  .reader.show .sheet { animation: unfold 1.1s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes unfold {
+    0%   { opacity: 0; transform: perspective(1400px) translateY(30vh) rotateX(80deg) scaleY(.34); }
+    55%  { opacity: 1; transform: perspective(1400px) translateY(4vh) rotateX(25deg) scaleY(.8); }
+    100% { opacity: 1; transform: none; }
+  }
+
+  .place {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: .98rem;
+    color: var(--ink-soft);
+    text-align: right;
+    margin: 0 0 18px;
+  }
+  .hello {
+    font-family: var(--f-script);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 9vw, 3.1rem);
+    line-height: 1.1;
+    margin: 0 0 12px;
+  }
+  .body p {
+    font-family: var(--f-hand);
+    font-size: clamp(1.35rem, 4.6vw, 1.6rem);
+    line-height: 1.38;
+    margin: 0 0 .7em;
+    max-width: 34em;
+  }
+  .ink { opacity: 0; }
+  .reader.show .ink { animation: ink 1.1s ease forwards; animation-delay: calc(1.2s + var(--i) * .7s); }
+  @keyframes ink {
+    from { opacity: 0; filter: blur(3px); transform: translateY(5px); }
+    to   { opacity: 1; filter: none; transform: none; }
+  }
+
+  .foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .pressed {
+    position: relative;
+    width: clamp(84px, 22vw, 112px);
+    flex: none;
+    transform: rotate(-9deg);
+  }
+  .pressed svg {
+    display: block; width: 100%; height: auto;
+    filter: sepia(.25) saturate(.8) drop-shadow(1px 2px 1px rgba(80,50,20,.25));
+  }
+  .tape {
+    position: absolute;
+    left: 50%; top: 62%;
+    width: 64px; height: 20px;
+    margin-left: -32px;
+    background: rgba(255,252,235,.5);
+    box-shadow: 0 1px 2px rgba(0,0,0,.08);
+    transform: rotate(24deg);
+  }
+  .sign {
+    font-family: var(--f-hand);
+    font-size: clamp(1.35rem, 4.6vw, 1.6rem);
+    text-align: right;
+    line-height: 1.25;
+    margin: 0 0 6px;
+  }
+  .sign b {
+    display: block;
+    font-family: var(--f-script);
+    font-weight: 400;
+    font-size: clamp(2rem, 7vw, 2.5rem);
+  }
+
+  .again {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--hint);
+    background: none;
+    border: 1px solid rgba(240,226,202,.28);
+    border-radius: 999px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .again:hover { border-color: var(--hint); color: #fff4e2; }
+  .again:focus-visible { outline: 2px dashed var(--hint); outline-offset: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01s !important; animation-delay: 0s !important; transition-duration: .01s !important; transition-delay: 0s !important; }
+  }
+</style>
+
+<main class="scene" id="scene">
+  <div class="envelope">
+    <div class="env-back"></div>
+    <div class="peek"></div>
+    <div class="env-front"></div>
+    <div class="to">para Luiza</div>
+    <div class="flap"></div>
+    <button class="seal" id="seal" type="button" aria-label="Quebrar o selo e abrir a carta">
+      <span class="wax l"><span>L</span></span>
+      <span class="wax r"><span>L</span></span>
+    </button>
+  </div>
+  <p class="hint">toque no selo</p>
+</main>
+
+<section class="reader" id="reader" hidden aria-live="polite">
+  <article class="sheet">
+    <p class="place ink" style="--i:0">Jaraguá do Sul, 17 de outubro de 2026</p>
+    <h1 class="hello ink" style="--i:0">Luiza,</h1>
+    <div class="body">
+      <p class="ink" style="--i:1">não é aniversário nem data especial. É só uma carta, escrita antes que o round acabe.</p>
+      <p class="ink" style="--i:2">A gente se conheceu jogando CS, e até hoje foi o melhor drop que eu já ganhei.</p>
+      <p class="ink" style="--i:3">Você é a duo que entra no bomb comigo mesmo sendo 2 contra 5. Já levei flash sua, já morri esperando você falar “vai”, e mesmo assim eu te escolheria em toda partida.</p>
+      <p class="ink" style="--i:4">Mandei uma florzinha aí dentro. Foi a única coisa que eu plantei esse ano que ninguém precisou desarmar.</p>
+      <p class="ink" style="--i:5">Nossa amizade é tipo rush B: zero estratégia, mas funciona. Valeu por existir. GG.</p>
+    </div>
+    <div class="foot">
+      <div class="pressed ink" style="--i:6" aria-hidden="true">
+        <svg viewBox="0 0 120 220">
+          <path d="M61 214 C57 176 66 134 58 96 C55 78 60 66 60 58" fill="none" stroke="#76804f" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M59 104 C51 94 45 84 42 72" fill="none" stroke="#76804f" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M60 156 C40 146 29 126 33 108 C48 116 58 132 60 156Z" fill="#8c9761" opacity=".85"/>
+          <path d="M61 126 C80 118 93 100 89 84 C75 92 64 106 61 126Z" fill="#97a26b" opacity=".8"/>
+          <path d="M60 156 C50 140 42 124 35 110 M61 126 C71 112 80 100 87 88" fill="none" stroke="#6b7446" stroke-width=".7" opacity=".6"/>
+          <ellipse cx="41" cy="66" rx="4.5" ry="8" fill="#b88aa1" transform="rotate(-20 41 66)"/>
+          <path d="M37 72 C40 76 44 76 46 72" fill="none" stroke="#76804f" stroke-width="1.4"/>
+          <g transform="translate(60 44)" opacity=".9">
+            <g fill="#c7a2c0" stroke="#a37c9b" stroke-width=".6">
+              <ellipse cy="-15" rx="9.5" ry="16"/>
+              <ellipse cy="-15" rx="9.5" ry="16" transform="rotate(72)"/>
+              <ellipse cy="-15" rx="9.5" ry="16" transform="rotate(144)"/>
+              <ellipse cy="-15" rx="9.5" ry="16" transform="rotate(216)"/>
+              <ellipse cy="-15" rx="9.5" ry="16" transform="rotate(288)"/>
+            </g>
+            <g stroke="#a37c9b" stroke-width=".5" opacity=".7">
+              <path d="M0 -4 V-24"/><path d="M0 -4 V-24" transform="rotate(72)"/><path d="M0 -4 V-24" transform="rotate(144)"/><path d="M0 -4 V-24" transform="rotate(216)"/><path d="M0 -4 V-24" transform="rotate(288)"/>
+            </g>
+            <circle r="5.5" fill="#d6ad5c"/>
+            <circle r="2.5" fill="#b98d3e" opacity=".7"/>
+          </g>
+        </svg>
+        <span class="tape"></span>
+      </div>
+      <p class="sign ink" style="--i:6">com carinho (e sem colete),<b>Thiago</b></p>
+    </div>
+  </article>
+  <button class="again ink" id="again" type="button" style="--i:7">guardar a carta</button>
+</section>
+
+<script>
+  const scene = document.getElementById('scene');
+  const reader = document.getElementById('reader');
+  const seal = document.getElementById('seal');
+  const again = document.getElementById('again');
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const t = ms => calm ? 0 : ms;
+
+  // som de papel feito na hora (ruído filtrado), toca só depois do toque
+  let ctx;
+  function rustle(dur, freq, vol) {
+    try {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      const len = Math.floor(ctx.sampleRate * dur);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2);
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = .8;
+      const g = ctx.createGain(); g.gain.value = vol;
+      src.connect(f).connect(g).connect(ctx.destination);
+      src.start();
+    } catch (e) {}
+  }
+
+  seal.addEventListener('click', () => {
+    rustle(.12, 900, .5);
+    scene.classList.add('broken');
+    setTimeout(() => { scene.classList.add('open'); rustle(.5, 2400, .25); }, t(650));
+    setTimeout(() => { scene.classList.add('out'); rustle(.7, 3200, .2); }, t(1400));
+    setTimeout(() => {
+      scene.classList.add('reading');
+      reader.hidden = false;
+      reader.scrollTop = 0;
+      requestAnimationFrame(() => reader.classList.add('show'));
+      rustle(.6, 1800, .3);
+    }, t(2450));
+  });
+
+  again.addEventListener('click', () => {
+    reader.classList.remove('show');
+    reader.hidden = true;
+    scene.className = 'scene';
+    seal.focus();
+  });
+</script>
+
+</html>
